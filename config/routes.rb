@@ -1,13 +1,15 @@
 Rails.application.routes.draw do
-  resources :posts
-  resources :events do
-    member do
-      post 'join'
-      delete 'leave'
-    end
-  end
-  resources :communities
+  
   devise_for :users
+  resources :communities do 
+   resources :events do
+     member do
+        post 'join'
+        delete 'leave'
+     end
+   end
+   resources :posts
+  end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

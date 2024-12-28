@@ -9,6 +9,9 @@ class CommunitiesController < ApplicationController
 
   # GET /communities/1 or /communities/1.json
   def show
+    @events = @community.events.order(date: :asc)
+    @posts = @community.posts.order(created_at: :desc)
+    @post = @community.posts.new if user_signed_in?
   end
 
   # GET /communities/new
@@ -23,6 +26,7 @@ class CommunitiesController < ApplicationController
   # POST /communities or /communities.json
   def create
     @community = Community.new(community_params)
+    @community.user = current_user
 
     respond_to do |format|
       if @community.save

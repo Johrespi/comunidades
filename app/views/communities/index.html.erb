@@ -2,8 +2,8 @@
   <h1 class="text-3xl font-bold mb-6 text-center">Comunidades</h1>
 
   <% if user_signed_in? %>
-    <div class="flex justify-end mb-4">
-      <%= link_to "Crear Comunidad", new_community_path, class: "bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" %>
+    <div class="flex-auto flex justify-center mb-4">
+      <%= link_to "Crear Comunidad", new_community_path, class: "mx-3 bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" %>
       <%= render "devise/shared/logout_button" %>
       </div>
   <% else %>

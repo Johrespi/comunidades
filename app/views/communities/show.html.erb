@@ -1,15 +1,94 @@
-<div class="mx-auto md:w-2/3 w-full flex">
-  <div class="mx-auto">
-    <% if notice.present? %>
-      <p class="py-2 px-3 bg-green-50 mb-5 text-green-500 font-medium rounded-lg inline-block" id="notice"><%= notice %></p>
+<div class="container mx-auto px-4 py-8">
+  <h1 class="text-3xl font-bold mb-4 text-center"><%= @community.name %></h1>
+  <p class="text-center text-gray-700 mb-6"><%= @community.description %></p>
+
+  <% if notice.present? %>
+    <p class="py-2 px-4 bg-green-100 text-green-700 rounded mb-6 text-center"><%= notice %></p>
+  <% end %>
+
+  <div class="flex justify-center mb-6 space-x-2">
+    <% if user_signed_in? && @community.user == current_user %>
+      <%= link_to "Editar Comunidad", edit_community_path(@community), class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" %>
+      <%= button_to "Eliminar Comunidad", @community, method: :delete, data: { confirm: "¿Estás seguro?" }, class: "bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" %>
     <% end %>
+    <%= link_to "Volver a Comunidades", communities_path, class: "bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded" %>
+  </div>
 
-    <%= render @community %>
+  <hr class="mb-6">
 
-    <%= link_to "Edit this community", edit_community_path(@community), class: "mt-2 rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
-    <%= link_to "Back to communities", communities_path, class: "ml-2 rounded-lg py-3 px-5 bg-gray-100 inline-block font-medium" %>
-    <div class="inline-block ml-2">
-      <%= button_to "Destroy this community", @community, method: :delete, class: "mt-2 rounded-lg py-3 px-5 bg-gray-100 font-medium" %>
+  <!-- Sección de Eventos -->
+  <div class="mb-12">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-2xl font-semibold">Eventos</h2>
+      <% if user_signed_in? %>
+        <%= link_to "Crear Evento", new_community_event_path(@community), class: "bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded" %>
+      <% end %>
     </div>
+
+    <% if @events.any? %>
+      <div class="space-y-6">
+        <% @events.each do |event| %>
+          <div class="bg-white p-6 rounded-lg shadow-md">
+            <h3 class="text-xl font-bold mb-2"><%= event.name %></h3>
+            <p class="text-gray-700 mb-4"><%= truncate(event.description, length: 200) %></p>
+            <p class="text-sm text-gray-500 mb-4">
+              Fecha: <%= event.date.strftime("%d/%m/%Y %H:%M") %>
+            </p>
+            <div class="flex space-x-4">
+              <%= link_to "Ver Evento", [@community, event], class: "text-blue-500 hover:text-blue-700 font-semibold" %>
+              <% if event.user == current_user %>
+                <%= link_to "Editar", edit_community_event_path(@community, event), class: "text-yellow-500 hover:text-yellow-700 font-semibold" %>
+                <%= button_to "Eliminar", [@community, event], method: :delete, data: { confirm: "¿Estás seguro?" }, class: "text-red-500 hover:text-red-700 font-semibold" %>
+              <% end %>
+              <% unless event.attendees.include?(current_user) || !user_signed_in? %>
+                <%= button_to "Unirse al Evento", join_community_event_path(@community, event), method: :post, class: "bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-3 rounded" %>
+              <% end %>
+              <% if event.attendees.include?(current_user) %>
+                <%= button_to "Abandonar Evento", leave_community_event_path(@community, event), method: :delete, class: "bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded" %>
+              <% end %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <p class="text-gray-600">No hay eventos disponibles en esta comunidad.</p>
+    <% end %>
+  </div>
+
+  <hr class="mb-12">
+
+  <!-- Sección de Posts -->
+  <div>
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-2xl font-semibold">Posts</h2>
+      <% if user_signed_in? %>
+        <%= link_to "Crear Post", new_community_post_path(@community), class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" %>
+      <% end %>
+    </div>
+
+    <% if @posts.any? %>
+      <div class="space-y-6">
+        <% @posts.each do |post| %>
+          <div class="bg-white p-6 rounded-lg shadow-md">
+            <div class="flex items-center mb-4">
+              <img src="<%= gravatar_url(post.user.email, size: 40) %>" alt="Avatar de <%= post.user.email %>" class="w-10 h-10 rounded-full mr-4">
+              <div>
+                <h3 class="text-lg font-semibold"><%= post.user.email %></h3>
+                <p class="text-sm text-gray-500"><%= post.created_at.strftime("%d/%m/%Y %H:%M") %></p>
+              </div>
+            </div>
+            <p class="text-gray-700 mb-4"><%= post.content %></p>
+            <% if post.user == current_user %>
+              <div class="flex space-x-4">
+                <%= link_to "Editar", edit_community_post_path(@community, post), class: "text-yellow-500 hover:text-yellow-700 font-semibold" %>
+                <%= button_to "Eliminar", [@community, post], method: :delete, data: { confirm: "¿Estás seguro?" }, class: "text-red-500 hover:text-red-700 font-semibold" %>
+              </div>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <p class="text-gray-600">No hay posts disponibles en esta comunidad.</p>
+    <% end %>
   </div>
 </div>
