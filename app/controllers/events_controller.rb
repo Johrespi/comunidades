@@ -1,29 +1,21 @@
 class EventsController < ApplicationController
   before_action :authenticate_user!
+  before_action :set_community
   before_action :set_event, only: %i[ show edit update destroy join leave ]
 
   def join
-    @event_attendee = @event.event_attendees.build(user: current_user)
-    if @event_attendee.save
-      redirect_to @event, notice: 'Te has unido al evento exitosamente.'
-    else
-      redirect_to @event, alert: 'No se pudo unir al evento.'
-    end
+    @event.attendees << current_user unless @event.attendees.include?(current_user)
+    redirect_to @event, notice: 'Te has unido al evento.'
   end
 
   def leave
-    @event_attendee = @event.event_attendees.find_by(user: current_user)
-    if @event_attendee
-      @event_attendee.destroy
-      redirect_to @event, notice: 'Has abandonado el evento.'
-    else
-      redirect_to @event, alert: 'No estabas en este evento.'
-    end
+    @event.attendees.delete(current_user)
+    redirect_to @community, notice: 'Has abandonado el evento.'
   end
 
   # GET /events or /events.json
   def index
-    @events = Event.all
+    @events = @community.events.order(date: :asc) 
   end
 
   # GET /events/1 or /events/1.json
@@ -32,59 +24,59 @@ class EventsController < ApplicationController
 
   # GET /events/new
   def new
-    @event = Event.new
+    @event = @community.events.new
   end
 
   # GET /events/1/edit
   def edit
+    authorize_user!
   end
 
   # POST /events or /events.json
   def create
-    @event = Event.new(event_params)
-
-    respond_to do |format|
+    @event = @community.events.new(event_params)
+    @event.user = current_user
       if @event.save
-        format.html { redirect_to @event, notice: "Event was successfully created." }
-        format.json { render :show, status: :created, location: @event }
+        redirect_to @community, notice: "Evento creado exitosamente."
       else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @event.errors, status: :unprocessable_entity }
+        render :new
       end
-    end
   end
 
   # PATCH/PUT /events/1 or /events/1.json
   def update
-    respond_to do |format|
+    authorize_user!
       if @event.update(event_params)
-        format.html { redirect_to @event, notice: "Event was successfully updated." }
-        format.json { render :show, status: :ok, location: @event }
+        redirect_to @community, notice: "Evento actualizado exitosamente."
       else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @event.errors, status: :unprocessable_entity }
+        render :edit
       end
-    end
   end
 
   # DELETE /events/1 or /events/1.json
   def destroy
+    authorize_user!
     @event.destroy!
-
-    respond_to do |format|
-      format.html { redirect_to events_path, status: :see_other, notice: "Event was successfully destroyed." }
-      format.json { head :no_content }
-    end
+    redirect_to @community, notice: "Evento eliminado exitosamente"
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
+
+   def set_community
+      @community = Community.find(params[:community_id])
+    end
+ 
     def set_event
-      @event = Event.find(params.expect(:id))
+      @event = @community.events.find(params[:id])
     end
 
-    # Only allow a list of trusted parameters through.
     def event_params
       params.expect(event: [ :name, :description, :date, :user_id, :community_id ])
+    end
+
+    def authorize_user!
+      unless current_user == @event.user
+        redirect_to @community, alert: 'No puedes editar o eliminar un evento que no creaste.'
+      end
     end
 end

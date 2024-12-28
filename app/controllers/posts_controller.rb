@@ -27,7 +27,7 @@ class PostsController < ApplicationController
     @post = @community.posts.new(post_params)
     @post.user = current_user
       if @post.save
-        redirect_to [@community, @post], notice: "Publicación creada exitosamente"
+        redirect_to @community, notice: "Publicación creada exitosamente"
       else
         render :new
       end
@@ -37,7 +37,7 @@ class PostsController < ApplicationController
   def update
     authorize_user!
       if @post.update(post_params)
-        redirect_to [@community, @post], notice: "Publicación actualizada exitosamente."
+        redirect_to @community, notice: "Publicación actualizada exitosamente."
       else
         render :edit
       end
