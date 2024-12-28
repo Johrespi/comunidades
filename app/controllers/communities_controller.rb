@@ -28,38 +28,26 @@ class CommunitiesController < ApplicationController
     @community = Community.new(community_params)
     @community.user = current_user
 
-    respond_to do |format|
       if @community.save
-        format.html { redirect_to @community, notice: "Community was successfully created." }
-        format.json { render :show, status: :created, location: @community }
+        redirect_to @community, notice: "Comunidad fue creada exitosamente."
       else
-        format.html { render :new, status: :unprocessable_entity }
-        format.json { render json: @community.errors, status: :unprocessable_entity }
+        render :new 
       end
-    end
   end
 
   # PATCH/PUT /communities/1 or /communities/1.json
   def update
-    respond_to do |format|
       if @community.update(community_params)
-        format.html { redirect_to @community, notice: "Community was successfully updated." }
-        format.json { render :show, status: :ok, location: @community }
+        redirect_to @community, notice: "Comunidad fue actualizada exitosamente."
       else
-        format.html { render :edit, status: :unprocessable_entity }
-        format.json { render json: @community.errors, status: :unprocessable_entity }
+        render :edit
       end
-    end
   end
 
   # DELETE /communities/1 or /communities/1.json
   def destroy
     @community.destroy!
-
-    respond_to do |format|
-      format.html { redirect_to communities_path, status: :see_other, notice: "Community was successfully destroyed." }
-      format.json { head :no_content }
-    end
+    redirect_to @community, notice: "Comunidad fue eliminada exitosamente."
   end
 
   private
