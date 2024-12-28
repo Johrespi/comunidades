@@ -35,7 +35,6 @@
               Fecha: <%= event.date.strftime("%d/%m/%Y %H:%M") %>
             </p>
             <div class="flex space-x-4">
-              <%= link_to "Ver Evento", [@community, event], class: "text-blue-500 hover:text-blue-700 font-semibold" %>
               <% if event.user == current_user %>
                 <%= link_to "Editar", edit_community_event_path(@community, event), class: "text-yellow-500 hover:text-yellow-700 font-semibold" %>
                 <%= button_to "Eliminar", [@community, event], method: :delete, data: { confirm: "¿Estás seguro?" }, class: "text-red-500 hover:text-red-700 font-semibold" %>

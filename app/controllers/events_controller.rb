@@ -5,7 +5,7 @@ class EventsController < ApplicationController
 
   def join
     @event.attendees << current_user unless @event.attendees.include?(current_user)
-    redirect_to @event, notice: 'Te has unido al evento.'
+    redirect_to @community, notice: 'Te has unido al evento.'
   end
 
   def leave
