@@ -1,0 +1,37 @@
+<p>
+  <strong>Nombre:</strong>
+  <%= @event.name %>
+</p>
+
+<p>
+  <strong>Descripción:</strong>
+  <%= @event.description %>
+</p>
+
+<p>
+  <strong>Fecha:</strong>
+  <%= @event.date.strftime("%d/%m/%Y %H:%M") %>
+</p>
+
+<p>
+  <strong>Creado por:</strong>
+  <%= @event.user.email %>
+</p>
+
+<% if user_signed_in? %>
+  <% if @event.attendees.include?(current_user) %>
+    <%= button_to 'Abandonar Evento', leave_event_path(@event), method: :delete, data: { confirm: '¿Estás seguro de que quieres abandonar este evento?' } %>
+  <% else %>
+    <%= button_to 'Unirse al Evento', join_event_path(@event), method: :post %>
+  <% end %>
+<% end %>
+
+<h3>Asistentes:</h3>
+<ul>
+  <% @event.attendees.each do |attendee| %>
+    <li><%= attendee.email %></li>
+  <% end %>
+</ul>
+
+<%= link_to 'Editar', edit_event_path(@event) if @event.user == current_user %> |
+<%= link_to 'Volver', events_path %>
