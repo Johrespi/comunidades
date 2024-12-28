@@ -71,7 +71,6 @@
         <% @posts.each do |post| %>
           <div class="bg-white p-6 rounded-lg shadow-md">
             <div class="flex items-center mb-4">
-              <img src="<%= gravatar_url(post.user.email, size: 40) %>" alt="Avatar de <%= post.user.email %>" class="w-10 h-10 rounded-full mr-4">
               <div>
                 <h3 class="text-lg font-semibold"><%= post.user.email %></h3>
                 <p class="text-sm text-gray-500"><%= post.created_at.strftime("%d/%m/%Y %H:%M") %></p>
