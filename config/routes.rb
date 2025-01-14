@@ -1,13 +1,19 @@
 Rails.application.routes.draw do
-  
   devise_for :users
-  resources :communities do 
+  resources :communities do
    resources :events do
      member do
-        post 'join'
-        delete 'leave'
+        post "join"
+        delete "leave"
      end
    end
+   # agregado César
+   resources :polls do
+      member do
+        get "results"
+      end
+      resources :votes, only: [ :create ]
+    end
    resources :posts
   end
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

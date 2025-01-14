@@ -89,4 +89,56 @@
       <p class="text-gray-600">No hay posts disponibles en esta comunidad.</p>
     <% end %>
   </div>
+  
+  <hr class="mb-12">
+
+  <!-- Sección de Encuestas -->
+  <!-- Agregado César -->
+  <div class="mb-12">
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-2xl font-semibold">Encuestas</h2>
+      <% if user_signed_in? %>
+        <%= link_to "Crear Encuesta", new_community_poll_path(@community), class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" %>
+      <% end %>
+    </div>
+
+    <% if @polls.any? %>
+      <div class="space-y-6">
+        <% @polls.each do |poll| %>
+          <div class="bg-white p-6 rounded-lg shadow-md">
+            <h3 class="text-xl font-bold mb-2"><%= poll.title %></h3>
+            <p class="text-sm text-gray-500 mb-4">
+              Finaliza: <%= poll.end_time.strftime("%d/%m/%Y %H:%M") %>
+            </p>
+            <% if poll.end_time > Time.current %>
+              <% if poll.votes.exists?(user: current_user) %>
+                <p>Ya votaste ingresa en ver encuesta para ver los resultados</p>
+              <% else %>
+                <%= form_with(model: [@community, poll, Vote.new], local: true) do |form| %>
+                  <% poll.options.each do |option| %>
+                    <div>
+                      <%= form.radio_button :option_id, option.id %>
+                      <%= form.label :option_id, option.title, value: option.id %>
+                    </div>
+                  <% end %>
+                  <%= form.submit "Votar" %>
+                <% end %>
+              <% end %>
+            <% else %>
+              <h2>Resultados</h2>
+              <% poll.options.each do |option| %>
+                <p><%= option.title %>: <%= option.votes.count %> votos</p>
+              <% end %>
+            <% end %>
+            <%= link_to "Ver Encuesta", community_poll_path(@community, poll), class: "text-blue-500 hover:text-blue-700 font-semibold" %>
+            <% if poll.user == current_user %>
+              <%= button_to "Eliminar", community_poll_path(@community, poll), method: :delete, data: { confirm: "¿Estás seguro?" }, class: "text-red-500 hover:text-red-700 font-semibold" %>
+            <% end %>
+          </div>
+        <% end %>
+      </div>
+    <% else %>
+      <p class="text-gray-600">No hay encuestas disponibles en esta comunidad.</p>
+    <% end %>
+  </div>
 </div>

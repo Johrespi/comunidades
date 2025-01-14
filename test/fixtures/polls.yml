@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  title: MyString
+  end_time: 2025-01-14 16:48:43
+  community: one
+  user: one
+
+two:
+  title: MyString
+  end_time: 2025-01-14 16:48:43
+  community: two
+  user: two

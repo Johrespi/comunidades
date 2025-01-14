@@ -9,7 +9,10 @@ class User < ApplicationRecord
   has_many :events
   has_many :posts
 
+  # agregado César
+  has_many :polls
+  has_many :votes
+
   has_many :event_attendees, dependent: :destroy
   has_many :attended_events, through: :event_attendees, source: :event
-
 end

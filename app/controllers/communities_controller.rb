@@ -11,7 +11,9 @@ class CommunitiesController < ApplicationController
   def show
     @events = @community.events.order(date: :asc)
     @posts = @community.posts.order(created_at: :desc)
+    @polls = @community.polls.order(created_at: :desc)# agregado César
     @post = @community.posts.new if user_signed_in?
+    @poll = @community.polls.new if user_signed_in?# agregado César
   end
 
   # GET /communities/new

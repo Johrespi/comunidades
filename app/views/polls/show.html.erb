@@ -1,0 +1,28 @@
+<h1><%= @poll.title %></h1>
+<p>Finaliza: <%= @poll.end_time.strftime("%d/%m/%Y %H:%M") %></p>
+
+<% if @poll.end_time > Time.current %>
+  <% if @user_voted %>
+    <h2>Resultados</h2>
+    <% @poll.options.each do |option| %>
+      <p><%= option.title %>: <%= option.votes.count %> votos</p>
+    <% end %>
+  <% else %>
+    <%= form_with(model: [@community, @poll, Vote.new], local: true) do |form| %>
+      <% @poll.options.each do |option| %>
+        <div>
+          <%= form.radio_button :option_id, option.id %>
+          <%= form.label :option_id, option.title, value: option.id %>
+        </div>
+      <% end %>
+      <%= form.submit "Votar" %>
+    <% end %>
+  <% end %>
+<% else %>
+  <h2>Resultados</h2>
+  <% @poll.options.each do |option| %>
+    <p><%= option.title %>: <%= option.votes.count %> votos</p>
+  <% end %>
+<% end %>
+
+<%= link_to "Volver a la Comunidad", community_path(@community) %>
