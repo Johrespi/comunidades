@@ -14,7 +14,7 @@ class PollsController < ApplicationController
 
   def new
     @poll = @community.polls.new
-    5.times { @poll.options.build } # Inicializa con 3 opciones vacías
+    5.times { @poll.options.build } # Inicializa con 5 opciones vacías
   end
 
   def create

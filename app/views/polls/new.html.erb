@@ -1,37 +1,43 @@
-<%= form_with(model: [@community, @poll], local: true) do |form| %>
+<div class="mx-auto md:w-2/3 w-full">
+  <h1 class="font-bold text-4xl mb-6">Crear Encuesta</h1>
+
+<%= form_with(model: [@community, @poll], local: true, class: "bg-white p-6 rounded-lg shadow-md") do |form| %>
   <% if @poll.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(@poll.errors.count, "error") %> prohibited this poll from being saved:</h2>
-      <ul>
-        <% @poll.errors.full_messages.each do |message| %>
-          <li><%= message %></li>
-        <% end %>
-      </ul>
+      <div class="mb-4">
+        <h2 class="text-red-500 text-lg">Errores:</h2>
+        <ul>
+          <% @poll.errors.full_messages.each do |message| %>
+            <li class="text-red-500"><%= message %></li>
+          <% end %>
+        </ul>
+      </div>
+    <% end %>
+
+    <div class="my-5">
+      <%= form.label :title, "Título de la encuesta", class: "block text-gray-700 text-sm font-bold mb-2" %>
+      <%= form.text_field :title, class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full" %>
     </div>
-  <% end %>
 
-  <div class="field">
-    <%= form.label :title %>
-    <%= form.text_field :title %>
-  </div>
-
-  <div class="field">
-    <%= form.label :end_time %>
-    <%= form.datetime_select :end_time %>
-  </div>
-
-  <h3>Opciones</h3>
-  <%= form.fields_for :options do |option_form| %>
-    <div class="field">
-      <%= option_form.label :title, "Opción" %>
-      <%= option_form.text_field :title %>
-      <%= option_form.check_box :_destroy %>
-      <%= option_form.label :_destroy, "Eliminar" %>
+    <div class="my-5">
+      <%= form.label :end_time, "Fecha de finalización", class: "block text-gray-700 text-sm font-bold mb-2" %>
+      <%= form.datetime_select :end_time, class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full" %>
     </div>
-  <% end %>
 
-  <div class="actions">
-    <%= form.submit "Crear Encuesta" %>
-  </div>
+    <h3 class="text-xl font-semibold mb-4">Opciones</h3>
+    <%= form.fields_for :options do |option_form| %>
+      <div class="my-3">
+        <%= option_form.label :title, "Opción", class: "block text-gray-700 text-sm font-bold mb-2" %>
+        <%= option_form.text_field :title, class: "block shadow rounded-md border border-gray-400 outline-none px-3 py-2 mt-2 w-full" %>
+        <div class="flex items-center mt-2">
+          <%= option_form.check_box :_destroy, class: "mr-2" %>
+          <%= option_form.label :_destroy, "Eliminar", class: "text-red-500" %>
+        </div>
+      </div>
+    <% end %>
+
+    <div class="flex items-center space-x-4 mt-6">
+      <%= form.submit "Crear Encuesta", class: "bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" %>
+      <%= link_to 'Cancelar', @community, class: "bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded" %>
+    </div>
 <% end %>
-
+</div>
