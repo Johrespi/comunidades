@@ -1,4 +1,6 @@
 <div id="<%= dom_id event %>">
+ 
+
   <p class="my-5">
     <strong class="block font-medium mb-1">Name:</strong>
     <%= event.name %>
@@ -12,6 +14,9 @@
   <p class="my-5">
     <strong class="block font-medium mb-1">Date:</strong>
     <%= event.date %>
+  </p>
+  <p>
+    Número de participantes: <%= event.attendees_count %>
   </p>
 
   <p class="my-5">

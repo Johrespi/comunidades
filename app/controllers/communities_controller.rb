@@ -1,6 +1,19 @@
 class CommunitiesController < ApplicationController
   before_action :authenticate_user!, except: %i[ index show ]
-  before_action :set_community, only: %i[ show edit update destroy ]
+  before_action :set_community, only: %i[ show edit update destroy metrics]
+  
+  # Agregado Luis Inga
+  def metrics
+    @events_count = @community.events_count
+    @posts_count = @community.posts_count
+    @total_attendees_count = @community.total_attendees_count
+    @average_attendees = @community.average_attendees_per_event
+
+    respond_to do |format|
+      format.html # Renderiza app/views/communities/metrics.html.erb
+      format.json { render json: metrics_data }
+    end
+  end
 
   # GET /communities or /communities.json
   def index
@@ -57,6 +70,16 @@ class CommunitiesController < ApplicationController
     def set_community
       @community = Community.find(params.expect(:id))
     end
+  
+    # Agregado Luis Inga
+    def metrics_data
+    {
+      events_count: @events_count,
+      posts_count: @posts_count,
+      total_attendees_count: @total_attendees_count,
+      average_attendees: @average_attendees
+    }
+  end
 
     # Only allow a list of trusted parameters through.
     def community_params

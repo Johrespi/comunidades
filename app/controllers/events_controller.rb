@@ -1,7 +1,7 @@
 class EventsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_community
-  before_action :set_event, only: %i[ show edit update destroy join leave ]
+  before_action :set_event, only: %i[ show edit update destroy join leave attendees_count]
 
   def join
     @event.attendees << current_user unless @event.attendees.include?(current_user)
@@ -11,6 +11,11 @@ class EventsController < ApplicationController
   def leave
     @event.attendees.delete(current_user)
     redirect_to @community, notice: 'Has abandonado el evento.'
+  end
+
+  # Luis Inga
+  def attendees_count
+        render json: { attendees_count: @event.attendees.count }
   end
 
   # GET /events or /events.json
